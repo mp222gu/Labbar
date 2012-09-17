@@ -1,5 +1,5 @@
 <?php
-
+require_once('../page.php');
 // 3.
 
 
@@ -21,25 +21,27 @@ function CheckNumeric($input) {
 		return $input . " är numerisk  " . "</br>";
 		return $input . " är inte numerisk " . "</br>";
 }
-echo "Fråga tre " . "</br>";
-echo  CheckInt(3);
-echo  CheckInt(3.5);
-echo  CheckInt("tre");
-echo  CheckString(3);
-echo  CheckString(3.5);
-echo  CheckString("tre");
+$page = new Page();
+$body = "";
+$body .= "Fråga tre " . "</br>";
+$body .= CheckInt(3);
+$body .=  CheckInt(3.5);
+$body .= CheckInt("tre");
+$body .=  CheckString(3);
+$body .=  CheckString(3.5);
+$body .=  CheckString("tre");
 $set = '';
 if (isset($set))
-echo "set </br>";
+$body .= "set </br>";
 unset($set);
 if (!isset($set))
-echo "unset" . "</br>";;
-echo  gettype(3) . "(3)</br>";
-echo  gettype(3.5) . "(3.5)</br>";
-echo  gettype("tre") . "(tre)</br>";
-echo  CheckNumeric(3);
-echo  CheckNumeric(3.5);
-echo  CheckNumeric("tre");
+$body .= "unset" . "</br>";;
+$body .=  gettype(3) . "(3)</br>";
+$body .=  gettype(3.5) . "(3.5)</br>";
+$body .=  gettype("tre") . "(tre)</br>";
+$body .=  CheckNumeric(3);
+$body .=  CheckNumeric(3.5);
+$body .=  CheckNumeric("tre");
 
 
 
@@ -49,3 +51,5 @@ echo  CheckNumeric("tre");
  *   enkelfnuttar $s
  *   dubbelfnuttad sträng
  */
+
+echo $page->GetXHTMLpage('frågor', $body);

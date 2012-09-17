@@ -1,7 +1,7 @@
 <?php
 
  class loginView{
- 		
+ 	// skapa variablar	
  	private $loggedinSession = "loggedin";
 	private $testUserName = "user";
 	private $testPassword = "pass";
@@ -11,6 +11,9 @@
 	private $logoutCookie = "logout";
 	private $remembermeCookie = "remember";
 	
+	/*
+	 *  Skapar html för loginboxen
+	 */
 	function DoLoginBox(){
 		
 		$output = '';
@@ -22,11 +25,13 @@
 		$output.= "<label>Remeber me</label> ";
 		$output.= "<input type='checkbox' name='remember'class='checkbox' />"; 
 		$output.= "<input type='submit' name='login' value='Log in' class='submit'/>"; 
-		
 		$output.= "</form>";
 		return $output;
 	}
 	
+	/*
+	 *  Skapar html för logoutboxen
+	 */
 	function DoLogoutBox(){
 		$output = '';
 		$output.= "<form action='index.php' >";
@@ -35,7 +40,7 @@
 		return $output;
 		
 	}
-	
+	// Kollar olika input från användaren 
 	function TriedToLogin(){
 		if (ISSET($_GET[$this->loginCookie])){
 			return true;

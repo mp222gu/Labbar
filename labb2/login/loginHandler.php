@@ -2,7 +2,7 @@
 
     
 class LoginHandler{
-
+// skapa variablar
 private $loggedinSession = "loggedin";
 private $testUserName = "user";
 private $testPassword = "pass";

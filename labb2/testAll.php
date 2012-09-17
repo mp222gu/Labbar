@@ -2,12 +2,21 @@
 require_once('page.php');
 require_once('login/loginHandler.php');
 session_start();
+
+/*
+ *  Class för tester av applikationen
+ */
 class Test{
-function TestLogin(){
-	$lh = new LoginHandler();
-	$page = new Page();
-	$title = "test";
-	$error = "";
+	/*
+	 * funktion som testar loginfunktionaliteten , de fel som genereras hamnar i 
+	 * errorvariabeln och visas på en felsida
+	 *
+	 */
+	function TestLogin(){
+		$lh = new LoginHandler();
+		$page = new Page();
+		$title = "test";
+		$error = "";
 		// Logga ut 
 		$lh->DoLogout();
 		
@@ -39,6 +48,7 @@ function TestLogin(){
 		return $page->GetXHTMLpage($title, $error);
 	}
 }
-
+// skapar en sida som visar felen
+$page = new Page();
 $t = new Test();
-echo $t->TestLogin();
+echo $page->GetXHTMLpage('testsida', $t->TestLogin());
