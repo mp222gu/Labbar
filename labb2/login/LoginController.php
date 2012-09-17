@@ -7,27 +7,23 @@ require_once 'LoginView.php';
 
 class LoginController{
 	
-  
-
+private $usernameCookie = "username";
+private $passwordCookie = "password";
 	
-	public function DoControl($lh){
+  	public function DoControl($lh){
 		$lv = new LoginView();
 		$output = '';
 		$output.= '<h2>Login Controller</h2>';
-		if(ISSET($_COOKIE['username'])){
-			
-		$lh->DoLogin($_COOKIE['username'], $_COOKIE['password'], false);
-		}
+	
 		if( $lh->IsLoggedIn()){
 	
-			
 			if($lv->TriedToLogout()){
 				$lh->DoLogout();
 				$output = $lv->DoLoginBox();
 				return $output;
 			}
 			else{
-				$output = $lv->DoLogoutBox();
+				$output = "<h2 class='loginok'>Logged in</h2></br>" . $lv->DoLogoutBox();
 				return $output;
 			}
 		}
@@ -37,16 +33,11 @@ class LoginController{
 	         	
 	         	$lh->DoLogin($lv->GetUsername(), $lv->GetPassword(), $lv->CheckedRememberMe());
 				if( $lh->IsLoggedIn()){
-					/*$user = $uh->FindUser($lv->GetUsername());
-					$output.= $uv->DoUserControlPanel($user);
-					$output.= $lv->DoLogoutBox(); 
-					return $output; 
-					 * 
-					 */
-					header('Location: index.php?controller=user');
+					
+					$output = "<h2 class='loginok'>Logged in</h2></br>" . $lv->DoLogoutBox();
 				}
 				else{
-					$output = "Wrong username or password ". $lv->DoLoginBox();
+					$output = "<h2 class='loginerror'>Wrong username or password </h2></br> ". $lv->DoLoginBox();
 				 	return $output;
 				}
 	
@@ -55,10 +46,7 @@ class LoginController{
 				$output = $lv->DoLoginBox();
 				 return $output;
 			 }
-			
 		}
-				
 		return $output;
 	}
-	
 }

@@ -9,6 +9,7 @@
 	private $passwordCookie = "password";
 	private $loginCookie = "login";
 	private $logoutCookie = "logout";
+	private $remembermeCookie = "remember";
 	
 	function DoLoginBox(){
 		
@@ -58,6 +59,12 @@
 			return $_GET[$this->passwordCookie];
 		}
 		return '';
+	}
+	function CheckedRememberMe(){
+		if(ISSET($GET[$this->remembermeCookie])){
+			return $GET[$this->remembermeCookie];
+		}
+		
 	}
 	
 }

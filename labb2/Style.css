@@ -1,4 +1,12 @@
 
+	h2.loginok {
+		
+		color:green;
+	}
+	h2.loginerror {
+		
+		color:red;
+	}
 	
 	form{
 		width:350px;
