@@ -14,9 +14,12 @@
 	/*
 	 *  Skapar html för loginboxen
 	 */
-	function DoLoginBox(){
+	function DoLoginBox($valid){
 		
 		$output = '';
+		if($valid == false){
+		$output.= "<h2 class='loginerror'>Wrong username or password </h2></br> ";
+		}
 		$output.= "<form action='index.php' >";
 		$output.= "<label>Username</label> ";
 		$output.= "<input type='textbox' name='username'/> "; 
@@ -34,6 +37,7 @@
 	 */
 	function DoLogoutBox(){
 		$output = '';
+		$output.= "<h2 class='loginok'>Logged in</h2></br>";
 		$output.= "<form action='index.php' >";
 		$output.= "<input type='submit' name='logout' value='Log out' id='logoutbutton'/>";
 		$output.= "</form>";
@@ -49,6 +53,8 @@
 	}
 	function TriedToLogout(){
 		if (ISSET($_GET[$this->logoutCookie])){
+			$_COOKIE[$this->usernameCookie] = "";
+			$_COOKIE[$this->passwordCookie] = "";
 			return true;
 		}
 		return false;
@@ -67,7 +73,8 @@
 	}
 	function CheckedRememberMe(){
 		if(ISSET($GET[$this->remembermeCookie])){
-			return $GET[$this->remembermeCookie];
+			$_COOKIE[$this->usernameCookie] = self::GetUserName();
+			$_COOKIE[$this->passwordCookie] = self::GetPassword();
 		}
 		
 	}

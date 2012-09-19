@@ -15,18 +15,18 @@ private $passwordCookie = "password";
   	public function DoControl($lh){
 		$lv = new LoginView();
 		$output = '';
-		$output.= '<h2>Login Controller</h2>';
+		
 	    // först kontrolleras om vi redan är inloggade
 		if( $lh->IsLoggedIn()){
 		// om vi har försökt logga ut
 			if($lv->TriedToLogout()){ 
 				$lh->DoLogout();
-				$output = $lv->DoLoginBox();
+				$output = $lv->DoLoginBox(true);
 				return $output;
 			}
 			
 			else{
-				$output = "<h2 class='loginok'>Logged in</h2></br>" . $lv->DoLogoutBox();
+				$output =  $lv->DoLogoutBox();
 				return $output;
 			}
 		}
@@ -39,17 +39,17 @@ private $passwordCookie = "password";
 				 // testa om loginförsöket lyckades
 				if( $lh->IsLoggedIn()){
 					
-					$output = "<h2 class='loginok'>Logged in</h2></br>" . $lv->DoLogoutBox();
+					$output = $lv->DoLogoutBox();
 				}
 				else{
-					$output = "<h2 class='loginerror'>Wrong username or password </h2></br> ". $lv->DoLoginBox();
+					$output =  $lv->DoLoginBox(false);
 				 	return $output;
 				}
 	
 			 }
 			 // om vi inte har försökt logga in
 			 else{
-				$output = $lv->DoLoginBox();
+				$output = $lv->DoLoginBox(true);
 				 return $output;
 			 }
 		}
