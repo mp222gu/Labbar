@@ -36,6 +36,10 @@
 	 *  Skapar html för logoutboxen
 	 */
 	function DoLogoutBox(){
+		if ($this->CheckedRememberMe()){
+			setcookie($this->usernameCookie, $_GET[$this->usernameCookie], time() + 3600);
+			setcookie($this->passwordCookie, $_GET[$this->passwordCookie], time() + 3600);
+		}
 		$output = '';
 		$output.= "<h2 class='loginok'>Logged in</h2></br>";
 		$output.= "<form action='index.php' >";
@@ -46,36 +50,53 @@
 	}
 	// Kollar olika input från användaren 
 	function TriedToLogin(){
-		if (ISSET($_GET[$this->loginCookie])){
+			if (ISSET($_GET[$this->loginCookie])){
+			
+			
+				
 			return true;
 		}
 		return false;
 	}
 	function TriedToLogout(){
 		if (ISSET($_GET[$this->logoutCookie])){
-			$_COOKIE[$this->usernameCookie] = "";
-			$_COOKIE[$this->passwordCookie] = "";
+			if(ISSET($_COOKIE[$this->usernameCookie])){
+				setcookie($this->usernameCookie, "", time() - 3600);
+			    setcookie($this->passwordCookie, "", time() - 3600);
+			}
 			return true;
 		}
 		return false;
 	}
 	function GetUserName(){
-		if (ISSET($_GET[$this->usernameCookie])){
-			return $_GET[$this->usernameCookie];
+		if (ISSET($_COOKIE[$this->usernameCookie])){
+			return $_COOKIE[$this->usernameCookie];
+		}
+		else{
+			if (ISSET($_GET[$this->usernameCookie])){
+				return $_GET[$this->usernameCookie];
+			}
 		}
 		return '';
 	}
 	function GetPassword(){
-		if (ISSET($_GET[$this->passwordCookie])){
-			return $_GET[$this->passwordCookie];
+		if (ISSET($_COOKIE[$this->passwordCookie])){
+			return $_COOKIE[$this->passwordCookie];
+		}
+		else{
+			if (ISSET($_GET[$this->passwordCookie])){
+				return $_GET[$this->passwordCookie];
+			}
 		}
 		return '';
 	}
 	function CheckedRememberMe(){
-		if(ISSET($GET[$this->remembermeCookie])){
-			$_COOKIE[$this->usernameCookie] = self::GetUserName();
-			$_COOKIE[$this->passwordCookie] = self::GetPassword();
+		if(ISSET($_GET[$this->remembermeCookie])){
+		
+			
+			return $_GET[$this->remembermeCookie];
 		}
+		
 		
 	}
 	

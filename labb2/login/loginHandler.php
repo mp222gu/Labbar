@@ -19,20 +19,15 @@ private $passwordCookie = "password";
 	}
 	
 	// Loggar in användare
-	function DoLogin($username, $password, $cookie){
+	function DoLogin($username, $password){
 		
 		
 		
 			if(( $username == $this->testUserName) && ($password == $this->testPassword)){
 				$_SESSION[$this->loggedinSession] = true;
-				if ($cookie == true){
-					
-					$_COOKIE[$this->usernameCookie] = $username;
-					$_COOKIE[$this->passwordCookie] = $password;
-				
-				}
+				return true;
 			}
-		
+		return false;
 		
 	}
 	
@@ -40,8 +35,7 @@ private $passwordCookie = "password";
 	function DoLogout(){
 		
 		$_SESSION[$this->loggedinSession] = false;
-		$_COOKIE[$this->usernameCookie] = "";
-	    $_COOKIE[$this->passwordCookie] = "";
+	
 		
 	}
 	

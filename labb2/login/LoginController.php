@@ -17,7 +17,7 @@ private $passwordCookie = "password";
 		$output = '';
 		
 	    // först kontrolleras om vi redan är inloggade
-		if( $lh->IsLoggedIn()){
+	    if ($lh->DoLogin($lv->GetUsername(), $lv->GetPassword())){
 		// om vi har försökt logga ut
 			if($lv->TriedToLogout()){ 
 				$lh->DoLogout();
@@ -35,10 +35,10 @@ private $passwordCookie = "password";
 			// om vi har försökt logga in 
 	         if($lv->TriedToLogin()){
 	         	
-	         	$lh->DoLogin($lv->GetUsername(), $lv->GetPassword(), $lv->CheckedRememberMe());
+				
 				 // testa om loginförsöket lyckades
-				if( $lh->IsLoggedIn()){
-					
+	         	if($lh->DoLogin($lv->GetUsername(), $lv->GetPassword())){
+				
 					$output = $lv->DoLogoutBox();
 				}
 				else{
