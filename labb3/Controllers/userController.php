@@ -8,8 +8,9 @@ class UserController{
 		$lv = new LoginView();
 		$uv = new UserView();
 		$output = "";
-		$output.= $uv->DoUserControlPanel($user);
-		$output.= $lv->DoLogoutBox();
+		$output .= $uv->DoUserControlPanel($user);
+		$output .= $lv->DoLogoutBox();
+		
 		return $output;
 	}
 

@@ -33,10 +33,10 @@ require_once('/views/formView.php');
 	 *  Skapar html för logoutboxen
 	 */
 	function DoLogoutBox(){
-		$fb = new Formbuilder();
+		$fb = new FormView();
 		
 		$output = '';
-		$output.= "<h2 class='loginok'>Logged in</h2></br>";
+		$fb->BuildLabel('Logged in');
 		$fb->BuildControllerField('login');	
 		$fb->BuildSubmitButton($this->logoutString,  'Log out', 'submit');
 		$output.= $fb->BuildForm('get');

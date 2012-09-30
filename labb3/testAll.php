@@ -1,6 +1,7 @@
 <?php 
-require_once('page.php');
+require_once('Views/pageView.php');
 require_once('login/loginHandler.php');
+require_once ('/Models/databaseHandler.php');
 session_start();
 
 /*
@@ -12,6 +13,7 @@ class Test{
 	 * errorvariabeln och visas på en felsida
 	 *
 	 */
+	
 	function TestLogin($db){
 		$lh = new LoginHandler($db);
 		$page = new Page();
@@ -46,13 +48,95 @@ class Test{
 			$error .= "</br><h2>logintester OK</h2>";
 		}
 		return  $error;
-	}
+	} 
 	public function TestDB(DatabaseHandler $db){
 		
 		$error = "";
 		
+		/*
+		 * Test för att hämta ut en användare 
+		 */
+		$username = "user1";
+		$password = "pass1";
+		$sql = "SELECT id, username, password, imagepath FROM testusers WHERE username = ? AND password = ?";
+	    
+	    $stmt = $db->Prepare($sql);
+		$stmt->bind_param("ss", $username, $password);
 		
-		$error = "Tester på databaser misslyckade";
+		$userList = $db->SelectMany($stmt);
+		
+		if($userList[0]['username'] != "user1"){
+				$error .= " Misslyckades att hämta user1 " ;
+			
+		}
+		/*
+		 * Test för att hämta ut alla användare i en lista 
+		 */
+		$sql = "SELECT id, username, password, imagepath FROM testusers ";
+		$stmt = $db->Prepare($sql);
+		$userList = $db->SelectMany($stmt);
+		if($userList[0]['username'] != "user1"){
+				$error .= " Misslyckades att hämta första posten  " ;
+			
+		}
+		if($userList[2]['username'] != "user3"){
+				$error .= " Misslyckades att hämta sista posten  " ;
+			
+		}
+		/*
+		 * Test av insert
+		*/
+		$newusername = "newuser";
+		$newpassword = "newpass";
+		$newimagepath = "newpath";
+		
+		 $sql = "INSERT INTO testusers (username, password, imagepath) VALUES (?,?,?)";
+		
+		$stmt = $db->Prepare($sql);
+		$stmt->bind_param("sss", $newusername, $newpassword,$newimagepath);
+		$db->RunInsertQuery($stmt);
+		
+		$username = "newuser";
+		$password = "newpass";
+		$sql = "SELECT id, username, password, imagepath FROM testusers WHERE username = ? AND password = ?";
+	    
+	    $stmt = $db->Prepare($sql);
+		$stmt->bind_param("ss", $username, $password);
+		
+		$userList = $db->SelectMany($stmt);
+		
+		if($userList[0]['username'] != "newuser"){
+				$error .= " Misslyckades att hämta användare efter insert " ;
+			
+		}
+		
+		 /*
+		 * 
+		 * Test av delete
+		 */
+		$id = $userList[0]['id'];
+		$sql = "DELETE FROM testusers WHERE id = ? ";
+		
+		 $stmt = $db->Prepare($sql);
+		$stmt->bind_param("i", $id);
+		$db->RunDeleteQuery($stmt);
+		
+		$sql = "SELECT username FROM testusers WHERE id = ? ";
+	    
+	    $stmt = $db->Prepare($sql);
+		$stmt->bind_param("i", $id);
+		$userList = $db->SelectMany($stmt);
+		if($userList){
+				$error.= " Fick ut en användare som borde varit borttagen ";
+			
+		}
+
+		if( $error === "" ){
+			$error = "Tester på databas OK ! ";
+		}
+		
+		
+		
 		
 		return $error;
 	}
@@ -61,7 +145,9 @@ class Test{
 $page = new Page();
 $t = new Test();
 $db = new DatabaseHandler();
+
 $body = "";
+// $body .= $t->TestLogin($db);
 $body .= $t->TestLogin($db);
 $body .= $t->TestDB($db);
 echo $page->GetXHTMLpage('testsida', $body);

@@ -7,7 +7,7 @@ require_once 'settings.php';
 class RegisterView{
 private $usernameString = "Username";
 private $passwordString = "Password";
-private $registerString = "Register";
+private $registerString = "register";
 private $removeString = "remove";
 private $imageString = "image";
 	
@@ -16,17 +16,7 @@ private $imageString = "image";
 		$fb = new FormView();
 		$settings = new Settings();
 		$output = '';
-		/*$output.= "<form action='index.php' >";
-		$output.= "<input type='hidden' name='controller' value='register'/>";
-		$output.= "<h2>Register User</h2>";
-		$output.= "<label>Username</label>";
-		$output.= "<input type='textbox' name='username'/> <p class='error'>".$userError ."</p>"; 
-		$output.= "<label>Password</label> ";
-		$output.= "<input type='textbox' name='password'/><p class='error'>".$passError ."</p> "; 
-	    $output.= "<input type='submit' name='register' value='Register' class='submit'/>"; 
-		$output.=  "<img src='" .$img . "'</img>";
-		 $output.= "<input type='hidden' name='image' value='". $img ."' />"; 
-		$output.= "</form>"; */
+		
 		$fb->BuildControllerField($this->registerString);
 		$fb->BuildTextBoxWithLabel($this->usernameString);
 		$fb->BuildTextBoxWithLabel($this->passwordString);
@@ -38,21 +28,14 @@ private $imageString = "image";
 		return $output;
 	}
 	
-	function DoUserList($users){
-		$output = '<div id="userlist"><h3>Users</h3><ul>';
-		foreach($users AS $user)
-		{
-			$output.= "<li>" .$user->GetUsername(). "</li><a href='?controller=user&remove=". $user->GetId() . "'>Remove</a><img src='" . $user->GetImage() ."'/>";
-			
-		}
-		$output.= "</ul></div>";
-		return $output;
-	}
+	
 	function TriedToRegister(){
 		
 		if(ISSET($_GET[$this->registerString])){
+	
 			return true;
 		}
+		
 		return false;
 	}
 	function TriedToRemove(){

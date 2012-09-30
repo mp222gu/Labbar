@@ -1,19 +1,28 @@
 <?php
+require_once '/Controllers//userController.php';
+require_once '/Controllers/registerController.php';
+require_once 'Controllers/adminController.php';
 require_once 'login/LoginController.php';
 require_once 'login/LoginHandler.php';
 require_once '/login/LoginView.php';
-require_once '/Controllers/registerController.php';
 require_once '/Models/userModel.php';
 require_once '/Views/registerView.php';
 require_once '/Views/uploadView.php';
-require_once '/Controllers//userController.php';
-require_once 'Page.php';
-require_once 'databaseHandler.php';
+require_once '/Views/pageView.php';
+require_once '/Models/databaseHandler.php';
+require_once 'routing.php';
 
 
 session_start();
 
 class MasterController{
+	private $adminUsername = "Admin";
+    private $controllerString = "controller";
+    private $loginControllerString = "login";
+    private $userControllerString = "user";
+	private $registerControllerString = "register";
+	private $adminControllerString = "admin";
+	
 	
 	public function DoControll(){
 		$db = new DatabaseHandler();
@@ -21,43 +30,63 @@ class MasterController{
 		$lv = new LoginView();
 		$lc = new LoginController();
 		$rc = new RegisterController();
-		$uh = new UserHandler($db);
+		$um = new UserModel($db);
 		$rv = new RegisterView();
 		$uc = new UserController();
 		$upv = new UploadView();
 		$uv = new UserView();
-		$controllerString = "controller";
-		$loginControllerString = "login";
-		$userControllerString = "user";
-		$registerControllerString = "register";
+		$ac = new AdminController();
+		
 		$output = '';
 		$registeroutput = '';
 		
 	    $user =	$lh->IsLoggedIn()? $lh->GetLoggedinUser() : null;
 		
-		if(isset($_GET[$controllerString])){
-			switch($_GET[$controllerString]){
-				case $loginControllerString : {
+		if(isset($_GET[$this->controllerString])){
+			switch($_GET[$this->controllerString]){
+				case $this->loginControllerString : {
+			
 					$output = $lc->DoControl($lv, $lh);
 					break;
 				}
-				case $registerControllerString : {
-					$registeroutput = $rc->DoControl($rv, $uh, $user);
+				case $this->registerControllerString : {
+					$registeroutput = $rc->DoControl($rv, $um, $user);
 					
 					break;
 				}
-				case $userControllerString : {
+				case $this->userControllerString : {
 					
-					$output = ($user != null)? $uc->DoControl($user) : $lc->DoControl($lv, $lh);
-				
-				break;
+					if( is_null($user)){
+						
+						Routing::ChangeController($this->loginControllerString);
+					}
+					else{ 
+						if ($user->GetUsername() == $this->adminUsername){
+							
+							
+							Routing::ChangeController($this->adminControllerString);
+						}
+						else{
+							
+							$output = $uc->DoControl($user);
+							
+						}
+					
+					}
+					break;
+				}
+				case $this->adminControllerString : {
+					
+					
+					$output = $ac->DoControl();
 				}
 				
-				}
+			}
 		return $output . $registeroutput;
-		}
+			}
 		else {
-			header( 'Location: index.php?controller=user' ) ;
+		
+			Routing::ChangeController($this->userControllerString);
 		}
 	}
 }

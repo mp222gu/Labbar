@@ -1,5 +1,5 @@
 <?php
-require_once('\databaseHandler.php');
+require_once('/Models/databaseHandler.php');
     
 class LoginHandler{
 // skapa variablar
@@ -33,8 +33,8 @@ public function __construct(DatabaseHandler $db){
 		$stmt = $this->db->Prepare($sqlquery);
 		
 		$stmt->bind_param("ss", $username, $password);
-		$id = 0;
-		$res = $this->db->Select($stmt ,$id);
+		
+		$res = $this->db->SelectMany($stmt);
 		if($res != null ) {
 			
 			$_SESSION[$this->loggedinSessionString] = true;
@@ -52,8 +52,10 @@ public function __construct(DatabaseHandler $db){
 	 	$this->db->ConnectToDb();
 		$sqlquery = "SELECT Id, Username, Password, imagepath FROM Users WHERE Username=? AND Password = ?";
 	 	$stmt = $this->db->Prepare($sqlquery);	
-	 	$stmt->bind_param("ss", $_SESSION['username'],$_SESSION['password']);
-		$user = $this->db->GetUser($stmt);
+	 	$stmt->bind_param("ss", $_SESSION[$this->usernameString],$_SESSION[$this->passwordString]);
+		$res = $this->db->SelectMany($stmt);
+		
+		$user = new User($res[0]['Id'], $res[0]['Username'], $res[0]['Password'],$res[0]['imagepath'] );
 		
 	 	return $user;
 	}

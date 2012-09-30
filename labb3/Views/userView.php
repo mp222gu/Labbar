@@ -14,4 +14,28 @@ class UserView{
 		$output.= "</div>";
 		return $output;
 	}
+	public function DoUserList($userList){
+		
+		$output = '';
+		$output .= "<ul>";
+		foreach($userList as  $user){
+			
+			$output.= "<li>". $user['Username'] . "<a href='index.php?controller=admin&remove=" .$user['Id'] . "'>Ta bort</a></li>";
+		}
+		$output .= "</ul>";
+		return $output;
+	}
+	public function TriedToRemove(){
+		
+		if(ISSET($_GET['remove'])){
+			return true;
+		}
+		return false;
+	}
+	public function GetRemoveId(){
+		if(ISSET($_GET['remove'])){
+			return $_GET['remove'];
+		}
+	}
+	
 }

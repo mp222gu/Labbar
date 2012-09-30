@@ -1,7 +1,7 @@
 <?php
 require_once 'dataBaseHandler.php';
 require_once 'user.php';
-class UserHandler{
+class UserModel{
 private $db;
 	function __construct(DatabaseHandler $db){
 		
@@ -20,47 +20,27 @@ private $db;
 		
 		
 	}
-	function DeleteUser($id){
-		
-		$dbh = new DataBaseHandler();
-	
-		$mysqli = $dbh->ConnectToDb();
-		if ($stmt = $mysqli->prepare("DELETE FROM Users WHERE Id = ?")){
-	 	 $stmt->bind_param("i", $id);
-		
-
-	    /* execute query */
-	    $stmt->execute();	    	
-	    	
-		}
+	function RemoveUser($id){
+			
+		$mysqli = $this->db->ConnectToDb();
+		$stmt = $this->db->Prepare("DELETE FROM Users WHERE Id = ?");
+	 	$stmt->bind_param("i", $id);
+		$this->db->RunDeleteQuery($stmt);
 	}
 	function GetAllUsers(){
-		
-		$dbh = new DataBaseHandler();
-		
+
 		$errormessage = "";
-		$mysqli = $dbh->ConnectToDb($errormessage);
-		if ($stmt = $mysqli->prepare("SELECT Id, Username, Password FROM Users")) {
+		$mysqli = $this->db->ConnectToDb($errormessage);
+		$sql =  "SELECT Id, Username, Password FROM Users";
+		if ($stmt = $this->db->Prepare($sql)) {
 	 	
+		    $userList = $this->db->SelectMany($stmt);
 		
-	    /* execute query */
-	    $stmt->execute();
-	
-	    /* bind result variables */
-	    $stmt->bind_result($id, $username, $password);
-		$users = array();
-		while($stmt->fetch()){
-			$user = new User();
-			$user->SetId($id);
-			$user->SetUsername($username);
-			$user->SetPassword($password);
-			$users[] = $user;
-		}
-		
-		return $users;
+			return $userList;
 		}
 	    /* fetch value */
 	}
+	
 	function FindUser($username){
 		$dbh = new DataBaseHandler();
 		
