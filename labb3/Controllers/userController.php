@@ -1,12 +1,17 @@
 <?php
+namespace Controller;
+
 require_once("/Views/userView.php");
-require_once("/login/loginView.php");
+require_once("/Login/loginView.php");
 
 class UserController{
-	public function DoControl($user){
+	/**
+	 * @return html
+	 */
+	public function DoControl(\Model\User $user){
 		
-		$lv = new LoginView();
-		$uv = new UserView();
+		$lv = new \View\LoginView();
+		$uv = new \View\UserView();
 		$output = "";
 		$output .= $uv->DoUserControlPanel($user);
 		$output .= $lv->DoLogoutBox();

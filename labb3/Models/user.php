@@ -1,4 +1,6 @@
 <?php
+namespace Model;
+require_once('/Common/validation.php');
 
 class User{
 	
@@ -6,38 +8,66 @@ class User{
 	private $password;
 	private $id;
 	private $imagepath;
+	private $validator;
 	
-	public function __construct($id, $username , $password, $imagepath){
+	public function __construct($id,  $username ,  $password,  $imagepath){
+		
+		$this->validator = \Common\Validator::GetInstance();
 		
 		$this->id = $id;
-		$this->username = $username;
-		$this->password = $password;
+		if($this->validator->ValidateUsername($username)){
+			$this->username = $username;
+		}
+		if($this->validator->ValidatePassword($password)){
+			$this->password = $password;
+		}
 		$this->imagepath = $imagepath;
 	}
 	
-	public function SetUsername($un){
-		$this->username = $un;
+	public function SetUsername( $username){
+		
+		if($this->validator->ValidateUsername($username)){
+			$this->username = $username;
+		}
 	}
-	public function SetPassword($pw){
-		$this->password = $pw;
+	public function SetPassword( $password){
+		
+		if($this->validator->ValidatePassword($password)){
+			$this->password = $password;
+		}
 	}
 	public function SetId($Id){
+		
 		$this->id = $Id;
 	}
 	public function GetUsername(){
-		return $this->username;
+		
+		if($this->validator->ValidateUsername($this->username)){
+			return $this->username;
+		}
 	}
 	public function GetPassword(){
-		return $this->password;
+		
+		if($this->validator->ValidatePassword($this->password)){
+			return $this->password;
+		}
 	}
 	public function GetId(){
+		
 		return $this->id;
 	}
 	public function GetImagePath(){
+		
 		return $this->imagepath;
 	}
 	public function SetImagePath($img){
+		
 		$this->imagepath = $img;
 	}
+	
+}
+class UserList{
+	
+	
 	
 }

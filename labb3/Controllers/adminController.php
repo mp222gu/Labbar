@@ -1,36 +1,44 @@
 <?php 
+namespace Controller;
+
 require_once('/Views/userView.php');
-require_once('/login/loginView.php');
+require_once('/Login/loginView.php');
 require_once('/Models/userModel.php');
 require_once('/Models/databaseHandler.php');
-require_once '/routing.php';
+require_once('/Views/navigationView.php');
 
 class AdminController{
 	
+	/**
+	 *  @return html
+	 */
 	public function DoControl(){
-		$db = new DatabaseHandler();
-		$um = new UserModel($db);
 		
+		$db = new \Model\DatabaseHandler();
+		$um = new \Model\UserModel($db);
 		$userList = $um->GetAllUsers();
+		$uv = new \View\UserView();
+		$lv = new \View\LoginView();
 		$output = "";
-		$uv = new UserView();
-		$lv = new LoginView();
 		if($uv->TriedToRemove()){
+			
 			$this->RemoveUser($um);
+			
 		}
 		$output .= $uv->DoUserList($userList);
 		$output .= $lv->DoLogoutBox();
+		
 		return $output;
 	}
-	public function RemoveUser(UserModel $um){
+	/**
+	 *  @return void
+	 */
+	public function RemoveUser(\Model\UserModel $um){
 		
-		    $uv = new UserView();
-		
+			$uv = new \View\UserView();
 			$userId = $uv->GetRemoveId();
-			$um->RemoveUser($userId);	
-			Routing::ChangeController('admin');
+			$um->RemoveUser($userId);
+			\View\NavigationView::GetAdminController();
 			
-	}
-		
-	
+	} 	
 }

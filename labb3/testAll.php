@@ -2,6 +2,7 @@
 require_once('Views/pageView.php');
 require_once('login/loginHandler.php');
 require_once ('/Models/databaseHandler.php');
+require_once('/Common/validation.php');
 session_start();
 
 /*
@@ -14,9 +15,9 @@ class Test{
 	 *
 	 */
 	
-	function TestLogin($db){
-		$lh = new LoginHandler($db);
-		$page = new Page();
+	function TestLogin(\Model\DatabaseHandler $db){
+		$lh = new \Model\LoginHandler($db);
+		$page = new \View\Page();
 		$title = "test";
 		$error = "";
 		// Logga ut 
@@ -49,7 +50,7 @@ class Test{
 		}
 		return  $error;
 	} 
-	public function TestDB(DatabaseHandler $db){
+	public function TestDB(\Model\DatabaseHandler $db){
 		
 		$error = "";
 		
@@ -132,7 +133,7 @@ class Test{
 		}
 
 		if( $error === "" ){
-			$error = "Tester på databas OK ! ";
+			$error .= "<h2>Tester på databas OK ! </h2>";
 		}
 		
 		
@@ -142,12 +143,20 @@ class Test{
 	}
 }
 // skapar en sida som visar felen
-$page = new Page();
+$page = new \View\Page();
 $t = new Test();
-$db = new DatabaseHandler();
+$db = new \Model\DatabaseHandler();
+$validator = \Common\Validator::GetInstance();
 
 $body = "";
-// $body .= $t->TestLogin($db);
+
 $body .= $t->TestLogin($db);
 $body .= $t->TestDB($db);
-echo $page->GetXHTMLpage('testsida', $body);
+$body.= "<h2>tester på validator</h2> <br />";
+foreach($validator->Test() AS $key => $value){
+			
+	$body.= $value;
+	
+}
+$page->content = $body;
+echo $page->GetXHTMLpage();

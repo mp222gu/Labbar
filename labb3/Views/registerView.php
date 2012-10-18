@@ -1,53 +1,89 @@
 <?php
-require_once '/Models/userModel.php';
-require_once '/Models/user.php';
+namespace View;
+
 require_once '/views/formView.php';
-require_once 'settings.php';
+require_once '/common/settings.php';
 
 class RegisterView{
 private $usernameString = "Username";
 private $passwordString = "Password";
+private $usernameConfirmString = "usernameconfirm";
+private $passwordConfirmString = "passwordconfirm";
+private $repeatedConfirmpassString = "repeatedpasswordconfirm";
 private $registerString = "register";
 private $removeString = "remove";
 private $imageString = "image";
+private $repeatedpassString = "PasswordRepeated";
+private $formConfirmString = "formconfirm";
 	
-	
-	function DoRegisterForm($userError, $passError, $img){
-		$fb = new FormView();
-		$settings = new Settings();
+	/**
+	 * @return html
+	 */
+	function DoRegisterForm($img){
+		
+		$dbSettings = new \Common\DatabaseSettings();
 		$output = '';
 		
-		$fb->BuildControllerField($this->registerString);
-		$fb->BuildTextBoxWithLabel($this->usernameString);
-		$fb->BuildTextBoxWithLabel($this->passwordString);
-		$fb->BuildSubmitButton($this->registerString, $this->registerString, 'submit');
-		$fb->BuildImage($img);
-		$fb->BuildHiddenField($this->imageString , $img);
-		$output = $fb->BuildForm();
+		$output.= "<form method='get' action='index.php' id='registerform'>" 
+				. "<input type='hidden' name='controller' value='$this->registerString'/>"
+				. "<div class='formrow'>"
+		        . "<label>$this->usernameString</label>"
+		        . "<input type='text' name='$this->usernameString' class='$this->usernameString'/>"
+		        . "<div class='$this->usernameConfirmString' ></div>"
+		        . '</div>'
+		        . "<div class='formrow'>"
+		        . "<label>$this->passwordString</label>"
+		        . "<input type='password' name='$this->passwordString' class='$this->passwordString' />"
+		        . "<div class='$this->passwordConfirmString' ></div>"
+		        . '</div>'
+		        . "<div class='formrow'>"
+		        . "<label>Repeat Password</label>"
+		        . "<input type='password' name='$this->repeatedpassString' class=' $this->repeatedpassString' />"
+				. "<div class='$this->repeatedConfirmpassString' ></div>"
+				. '</div>'
+				. "<div class='formrow'>"
+				. "<div class='$this->formConfirmString' ></div>"
+				. "</div>"
+		        . "<input type='submit'  value='$this->registerString' id='registerButton' />"
+				. "<img src='$img' alt='image' />"
+		        . "<input type='hidden' name='$this->imageString' value='$img' />"
+		        . "<input type='hidden' name='$this->registerString' value='$this->registerString' />"
+		        . "</form>";
+		
 		
 		return $output;
 	}
 	
-	
+	/**
+	 * @return boolean
+	 */
 	function TriedToRegister(){
 		
 		if(ISSET($_GET[$this->registerString])){
-	
+			
 			return true;
 		}
 		
 		return false;
 	}
+	/**
+	 * @return boolean
+	 */
 	function TriedToRemove(){
 		
 		if(ISSET($_GET[$this->removeString])){
+			
 			return true;
 		}
 		return false;
 	}
+	/**
+	 * @return int
+	 */
 	function GetRemoveId(){
 		
 		if(isset($_GET[$this->removeString])){
+			
 			return $_GET[$this->removeString];
 		}
 		return '';
@@ -55,31 +91,58 @@ private $imageString = "image";
 
 	
 	}
-	function GetUsername(&$error){
+	/**
+	 * @return string
+	 */
+	function GetUsername(){
 		
 		if(ISSET($_GET[$this->usernameString])){
+			
 			if ($_GET[$this->usernameString] != ""){
 			return $_GET[$this->usernameString];
 			}
-			$error.= "Username required ";
+		
 		}
 		return '';
 	}
-    function GetPassword(&$error){
+	/**
+	 * @return string
+	 */
+    function GetPassword(){
 		
 		if(ISSET($_GET[$this->passwordString])){
 			if ($_GET[$this->passwordString] != ""){
-			return $_GET[$this->passwordString];
+				
+				return $_GET[$this->passwordString];
 			}
-			$error.= "Password needs to be at least 6 characters ";
+			
 		}
 		return '';
 	}
+	/**
+	 * @return string
+	 */
 	function GetImage(){
 		
 		if(ISSET($_GET[$this->imageString])){
+			
 			if ($_GET[$this->imageString] != ""){
 			return $_GET[$this->imageString];
+			}
+			
+		}
+		return '';
+	}
+	/**
+	 * @return string
+	 */
+	function GetRepeatedPass(){
+		
+		if(ISSET($_GET[$this->repeatedpassString])){
+			
+			if ($_GET[$this->repeatedpassString] != ""){
+				
+				return $_GET[$this->repeatedpassString];
 			}
 			
 		}

@@ -1,5 +1,7 @@
 <?php
-require_once '/Controllers//userController.php';
+namespace Controller;
+
+require_once '/Controllers/userController.php';
 require_once '/Controllers/registerController.php';
 require_once 'Controllers/adminController.php';
 require_once 'login/LoginController.php';
@@ -10,7 +12,7 @@ require_once '/Views/registerView.php';
 require_once '/Views/uploadView.php';
 require_once '/Views/pageView.php';
 require_once '/Models/databaseHandler.php';
-require_once 'routing.php';
+require_once 'Views/navigationView.php';
 
 
 session_start();
@@ -19,82 +21,86 @@ class MasterController{
 	private $adminUsername = "Admin";
     private $controllerString = "controller";
     private $loginControllerString = "login";
-    private $userControllerString = "user";
-	private $registerControllerString = "register";
-	private $adminControllerString = "admin";
+    
 	
-	
+	/**
+	 * @retrun html
+	 */
 	public function DoControll(){
-		$db = new DatabaseHandler();
-		$lh = new LoginHandler($db);
-		$lv = new LoginView();
-		$lc = new LoginController();
-		$rc = new RegisterController();
-		$um = new UserModel($db);
-		$rv = new RegisterView();
-		$uc = new UserController();
-		$upv = new UploadView();
-		$uv = new UserView();
-		$ac = new AdminController();
 		
+		$db = new \Model\DatabaseHandler();
+		$lh = new \Model\LoginHandler($db);
+		$lv = new \View\LoginView();
+		$lc = new \Controller\LoginController();
+		$rc = new RegisterController();
+		$um = new \Model\UserModel($db);
+		$rv = new \View\RegisterView();
+		$uc = new UserController();
+		$upv = new \View\UploadView();
+		$uv = new \View\UserView();
+		$ac = new AdminController();
 		$output = '';
 		$registeroutput = '';
-		
 	    $user =	$lh->IsLoggedIn()? $lh->GetLoggedinUser() : null;
 		
-		if(isset($_GET[$this->controllerString])){
-			switch($_GET[$this->controllerString]){
-				case $this->loginControllerString : {
+			switch(\View\NavigationView::GetController()){
+				
+				case \View\NavigationView::GetLoginControllerString() : {
 			
 					$output = $lc->DoControl($lv, $lh);
 					break;
 				}
-				case $this->registerControllerString : {
-					$registeroutput = $rc->DoControl($rv, $um, $user);
+				case \View\NavigationView::GetRegisterControllerString() : {
 					
+					$registeroutput = $rc->DoControl($rv, $um);
 					break;
 				}
-				case $this->userControllerString : {
+				case \View\NavigationView::GetUserControllerString() : {
 					
 					if( is_null($user)){
 						
-						Routing::ChangeController($this->loginControllerString);
+						\View\NavigationView::GetLoginController();
+					
 					}
-					else{ 
+					else{
+						 
 						if ($user->GetUsername() == $this->adminUsername){
 							
-							
-							Routing::ChangeController($this->adminControllerString);
+							\View\NavigationView::GetAdminController();
+						
 						}
 						else{
 							
-							$output = $uc->DoControl($user);
-							
+							$output = $uc->DoControl($user);							
 						}
-					
 					}
+					
 					break;
 				}
-				case $this->adminControllerString : {
-					
+				case \View\NavigationView::GetAdminControllerString() : {
 					
 					$output = $ac->DoControl();
+					break;
 				}
-				
-			}
-		return $output . $registeroutput;
-			}
-		else {
+				case "": {
 		
-			Routing::ChangeController($this->userControllerString);
-		}
+					\View\NavigationView::GetUserController();
+				}
+			}
+			
+	return $output . $registeroutput;
 	}
+
 }
 
 $mc = new MasterController();
-$body = '';
-$body .= $mc->DoControll();
-$page = new Page();
-echo $page->GetXHTMLpage('Labb 3' , $body);
+$content = '';
+$content .= $mc->DoControll();
+$page = new \View\Page();
+$page->content = $content;
+$page->styleSheet = "Stylesheets/Style.css";
+$page->AddScript('//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js');
+$page->AddScript("Scripts/validation.js");
+echo $page->GetXHTMLpage();
 
 
