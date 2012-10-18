@@ -12,7 +12,7 @@ class User{
 	
 	public function __construct($id,  $username ,  $password,  $imagepath){
 		
-		$this->validator = \Common\Validator::GetInstance();
+		$this->validator = new \Common\Validator();
 		
 		$this->id = $id;
 		if($this->validator->ValidateUsername($username)){

@@ -90,7 +90,7 @@ function ValidateRepeatedPassword(textbox) {
             } 
             else{
             	
-            	$confirmation = '<p class="unvalid">Passwords dont match</p>' + textbox.value + $password ;
+            	$confirmation = '<p class="unvalid">Passwords dont match</p>' ;
             }
            
             $('.repeatedpasswordconfirm').html($confirmation);

@@ -10,6 +10,7 @@ class Settings{
 		'tablename' => 'labbar'
 		
 	);
+	
 	public static function GetDatabaseSettings(){
 		
 		return self::$dataBaseSettings;

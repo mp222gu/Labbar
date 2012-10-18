@@ -2,6 +2,7 @@
 namespace View;
 
 require_once('/views/formView.php');
+require_once('/Common/errormessages.php');
  class loginView{
  	// skapa variablar	
  	private $loggedinSessionString = "loggedin";
@@ -17,8 +18,11 @@ require_once('/views/formView.php');
 	function DoLoginBox($valid){
 		$fb = new \View\FormView();
 		$output = '<form method="get" action="index.php">';
-		if($valid === false){
-			$output.= "<h2 class='loginerror'>Wrong username or password </h2></br> ";
+		if($valid !== true){
+		
+			foreach($valid AS $key => $value){
+				$output.= "<h2 class='loginerror'>" .\Common\ErrorMessage::GetErrormessage($value). "</h2></br> ";
+			}
 		}
 		
 		$output.= "<input type='hidden' name='controller' value='login'"	

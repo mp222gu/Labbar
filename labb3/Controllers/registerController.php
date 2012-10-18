@@ -1,44 +1,121 @@
 <?php
 namespace Controller;
 
+require_once('/Models/userModel.php');
+require_once('/Models/uploadModel.php');
 require_once('/Views/uploadView.php');
 require_once('Views/navigationView.php');
+require_once('/Common/errormessages.php');
 
 class RegisterController{
 	
-	/*
-	 * @return html
-	 */
+	private $db;
+	private $um;
+	private $upm;
+	private $upv;
+	private $img = "";
+	
+	   
+	
+	
+	public function __construct(){
+		
+		
+		$this->db = new \Model\DatabaseHandler();
+		$this->um = new \Model\UserModel($this->db);
+		$this->upm = new \Model\UploadModel();
+		$this->upv = new \View\UploadView();
+	
+		
+	}
 	public function DoControl(\View\RegisterView $rv,\Model\UserModel $um){
 		
-		$upv = new \View\UploadView();
 		
+		$valid = array();
 		$uploadError = '';
 		$output = '';
-		$img = "";
-				
+		
+		
+	
 		if($rv->TriedToRemove()){
 			
-			$um->DeleteUser($rv->GetRemoveId());
+			$this->um->DeleteUser($rv->GetRemoveId());
 			
 		}
 		if($rv->TriedToRegister() == true){
-			
-				if($um->CreateUser($rv->GetUsername(),$rv->GetPassword(), $rv->GetImage())){
+			if(!$this->um->FindUser($rv->GetUsername(), $rv->GetPassword())){
+				if($this->um->CreateUser($rv->GetUsername(),$rv->GetPassword(), $this->upc->GetSavedImage())){
 					\View\NavigationView::GetUserController();
 				}
+				else{
+					$valid = $um->GetErrors();						
 				
-		}
-		if($upv->TriedToUpload()){
-			
-				$imgpath = $upv->MoveFile($error);
-				$uh->AddImageToUser($imgpath);
-				$img = $imgpath;
+				}
 				
 			}
-		$output.= $rv->DoRegisterForm($img);
-		$output.= $upv->DoUploadForm($uploadError);
+			else{
+				
+				$output.= $this->DoUploadControl();
+				$this->img = $this->GetSavedImage();
+				$valid = array_merge($valid, $this->GetUploadErrors()) ;
+			
+				$output.= $rv->DoRegisterForm($this->img, $valid);
+				
+			
+				
+				return $output;	
+			}
+				
+		}
+		$output.= $this->DoUploadControl($this->GetUploadErrors());
+		$this->img = $this->GetSavedImage();
+		$valid = array_merge($valid, $this->GetUploadErrors()) ;
+		
+		$output.= $rv->DoRegisterForm($this->img, $valid);
+		
+			
+		
 						
 		return $output;	
 	}	
+	
+	/*
+	 * 
+	 * 
+	 * UploadController
+	 */
+	public function DoUploadControl(){
+		
+		$uploadMessage = "";
+		$output = "";
+		
+		if($this->upv->TriedToUpload()){
+								
+				$this->SaveImage();	   	
+		}
+		
+		$output.= $this->upv->DoUploadForm($uploadMessage);
+		return $output;
+		
+	
+	}
+	public function SaveImage(){
+		
+		
+		$uploadedFile = $this->upv->GetUploadedFiles();
+		
+		if($uploadedFile != null){
+			$this->upm->SaveFile($uploadedFile, $this->upv->GetUploadFileName() );
+			
+		}
+	}
+	public function GetSavedImage(){
+		
+		
+		return  $this->upm->GetTargetFile();
+	}
+	public function GetUploadErrors(){
+		
+		return $this->upm->GetErrorList();
+	}
 }

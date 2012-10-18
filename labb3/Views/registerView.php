@@ -1,8 +1,9 @@
 <?php
 namespace View;
 
-require_once '/views/formView.php';
-require_once '/common/settings.php';
+require_once ('/views/formView.php');
+require_once ('/common/settings.php');
+
 
 class RegisterView{
 private $usernameString = "Username";
@@ -19,13 +20,17 @@ private $formConfirmString = "formconfirm";
 	/**
 	 * @return html
 	 */
-	function DoRegisterForm($img){
+	function DoRegisterForm($img, $valid){
 		
 		$dbSettings = new \Common\DatabaseSettings();
 		$output = '';
-		
+		foreach($valid AS $key => $value){
+			$output .= "<h3>". $value."</h3>";
+		}
 		$output.= "<form method='get' action='index.php' id='registerform'>" 
 				. "<input type='hidden' name='controller' value='$this->registerString'/>"
+				. "<label>Avatar</label>"
+				. "<img src='$img' alt=''  class='avatar'/>"
 				. "<div class='formrow'>"
 		        . "<label>$this->usernameString</label>"
 		        . "<input type='text' name='$this->usernameString' class='$this->usernameString'/>"
@@ -45,7 +50,7 @@ private $formConfirmString = "formconfirm";
 				. "<div class='$this->formConfirmString' ></div>"
 				. "</div>"
 		        . "<input type='submit'  value='$this->registerString' id='registerButton' />"
-				. "<img src='$img' alt='image' />"
+				
 		        . "<input type='hidden' name='$this->imageString' value='$img' />"
 		        . "<input type='hidden' name='$this->registerString' value='$this->registerString' />"
 		        . "</form>";
@@ -148,4 +153,5 @@ private $formConfirmString = "formconfirm";
 		}
 		return '';
 	}
+	
 }

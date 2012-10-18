@@ -16,7 +16,8 @@ private $passwordCookie = "password";
 		$output = '';
 		
 	    // först kontrolleras om vi redan är inloggade
-	    if ($lh->DoLogin($lv->GetUsername(), $lv->GetPassword())){
+	   	$ret = $lh->DoLogin($lv->GetUsername(), $lv->GetPassword());
+	    if ($ret === true){
 		// om vi har försökt logga ut
 			if($lv->TriedToLogout()){ 
 				$lh->DoLogout();
@@ -36,13 +37,16 @@ private $passwordCookie = "password";
 	         if($lv->TriedToLogin()){
 	         	
 				// testa om loginförsöket lyckades
-	         	if($lh->DoLogin($lv->GetUsername(), $lv->GetPassword())){
+				$ret = $lh->DoLogin($lv->GetUsername(), $lv->GetPassword());
+				
+	         	if($ret === true){
 				
 				     $lv->SetCookies($lv->GetUsername(),$lv->GetPassword(), 3600);
 					 \View\NavigationView::GetUserController();
 				}
 				else{
-					$output =  $lv->DoLoginBox(false);
+					
+					$output =  $lv->DoLoginBox($ret);
 				 	return $output;
 				}
 	

@@ -9,10 +9,11 @@ require_once 'login/LoginHandler.php';
 require_once '/login/LoginView.php';
 require_once '/Models/userModel.php';
 require_once '/Views/registerView.php';
-require_once '/Views/uploadView.php';
+
 require_once '/Views/pageView.php';
 require_once '/Models/databaseHandler.php';
 require_once 'Views/navigationView.php';
+
 
 
 session_start();
@@ -32,13 +33,14 @@ class MasterController{
 		$lh = new \Model\LoginHandler($db);
 		$lv = new \View\LoginView();
 		$lc = new \Controller\LoginController();
-		$rc = new RegisterController();
+		$rc = new \Controller\RegisterController();
 		$um = new \Model\UserModel($db);
 		$rv = new \View\RegisterView();
 		$uc = new UserController();
-		$upv = new \View\UploadView();
+		
 		$uv = new \View\UserView();
 		$ac = new AdminController();
+	
 		$output = '';
 		$registeroutput = '';
 	    $user =	$lh->IsLoggedIn()? $lh->GetLoggedinUser() : null;
@@ -53,6 +55,7 @@ class MasterController{
 				case \View\NavigationView::GetRegisterControllerString() : {
 					
 					$registeroutput = $rc->DoControl($rv, $um);
+				
 					break;
 				}
 				case \View\NavigationView::GetUserControllerString() : {

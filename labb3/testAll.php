@@ -35,7 +35,7 @@ class Test{
 			
 		}
 		// logga in med rätt uppgifter
-		$lh->DoLogin("test", "testtest");
+		$lh->DoLogin("testtest", "testTEST1234");
 		if(!$lh->IsLoggedIn()){
 			$error .= " Vi loggades inte in trots att vi borde  det </br>";
 			
@@ -146,7 +146,7 @@ class Test{
 $page = new \View\Page();
 $t = new Test();
 $db = new \Model\DatabaseHandler();
-$validator = \Common\Validator::GetInstance();
+$validator = new \Common\Validator();
 
 $body = "";
 

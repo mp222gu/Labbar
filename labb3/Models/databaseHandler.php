@@ -19,7 +19,7 @@ class DatabaseHandler{
 		
 	    if ($this->mysqli->connect_error) {
 	    	
-                    throw new Exception($this->mysqli->connect_error);
+                    throw new \Exception($this->mysqli->connect_error);
 			
 					return false;
 		}
@@ -38,7 +38,7 @@ class DatabaseHandler{
 			
 			if ($stmt->execute() == FALSE) {
 				
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                 
                 $ret = $stmt->insert_id;
@@ -53,7 +53,7 @@ class DatabaseHandler{
                        
                        
                 if ($stmt->execute() == FALSE) {
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                 
                 $ret = $stmt->insert_id;
@@ -88,11 +88,11 @@ class DatabaseHandler{
 			
             if ($stmt === FALSE) {
             	
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
             	}
 			if ($stmt->execute() == FALSE) {
 				
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
 			$result = $stmt->get_result();
 			$res = array();
@@ -110,17 +110,17 @@ class DatabaseHandler{
                
                 if ($stmt === FALSE) {
                 	
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                
                 if ($stmt->execute() == FALSE) {
                 	
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                 $ret = 0;
                
                 if ($stmt->bind_result($ret) == FALSE) {
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                
                 $stmt->fetch();
@@ -139,7 +139,7 @@ class DatabaseHandler{
                
                 if ($ret == FALSE) {
                 	
-                        throw new Exception($this->mysqli->error);
+                        throw new \Exception($this->mysqli->error);
                 }
                
                 return $ret;

@@ -2,7 +2,7 @@
 namespace Common;
 
 class Validator {
-        private $errorNumber = null;
+        private $errorList = null;
         private static $instance;
         private static $kMinPasswordLength = 8;
         private static $kMaxPasswordLength = 15;
@@ -14,15 +14,18 @@ class Validator {
         const WRONG_SSN_FORMAT = 3;
         const WRONG_DATE_FORMAT = 4;
         
-        public static function GetInstance() {
+      /* public static function GetInstance() {
             if (!self::$instance) {
                 self::$instance = new Validator();
+				
             } 
             return  self::$instance;
+        } */
+        public function __construct(){
+        	$this->errorList = array();
         }
-        
-        public function GetValidationError() {
-            return $this->error;
+        public function GetValidationErrors() {
+            return $this->errorList;
         }
         
         public function ValidateEmail($email) {
@@ -30,16 +33,16 @@ class Validator {
                 if (preg_match($pattern, $email)) {
                         return true;
                 } else {
-                    $this->errorNumber = self::WRONG_EMAIL_FORMAT;
+                    $this->errorList[] = self::WRONG_EMAIL_FORMAT;
                     return false;
                 }
         }
         
         public function ValidateUsername($username) {
-            if (preg_match('/^[a-zA-Z0-9]{5,}$/', $username)) {
+            if (preg_match('/[a-zA-Z0-9]{5,}$/', $username)) {
                 return true;
             } else {
-                $this->errorNumber = self::WRONG_USERNAME_FORMAT;
+                 $this->errorList[] = self::WRONG_USERNAME_FORMAT;
                 return false;
             }
         }
@@ -48,7 +51,7 @@ class Validator {
             if (preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}/', $password)) {
                 return true;
             } else {
-                $this->errorNumber = self::WRONG_PASSWORD_FORMAT;
+                 $this->errorList[] = self::WRONG_PASSWORD_FORMAT;
                 return false;
             }
         }
@@ -63,7 +66,7 @@ class Validator {
             $pattern[]="^[10]{1}[90]{1}[0-9]{6}[0-9]{4}$";     //XXXXXXXXXX
             foreach ($pattern as $val) {
                 if (!preg_match($val, $ssn)){
-                    $this->errorNumber = self::WRONG_SSN_FORMAT;
+                     $this->errorList[] = self::WRONG_SSN_FORMAT;
                     return false;
                 }
             }
@@ -71,7 +74,7 @@ class Validator {
             $testWithLuhn = $this->TestWithLuhn($ssn);    // Testa numret med luhns algoritm
             
             if ($testWithLuhn == false) {
-                $this->errorNumber = self::WRONG_SSN_FORMAT;
+                 $this->errorList[] = self::WRONG_SSN_FORMAT;
                 return false;
             }
             
@@ -120,7 +123,7 @@ class Validator {
                                 return $date;
                         }
                         else {
-                            $this->errorNumber = self::WRONG_DATE_FORMAT;
+                             $this->errorList[] = self::WRONG_DATE_FORMAT;
                             return false;
                         }
         

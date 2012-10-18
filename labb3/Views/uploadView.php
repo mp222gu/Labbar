@@ -3,21 +3,31 @@ namespace View;
 
 require_once ('formView.php');
 
+
 	class UploadView{
-		
+	private $maxFileSize = 100000; 
+	private $uploadedFileName = 'avatar';
+	
 	/**
 	 * @return html
-	 */
-		function DoUploadForm($error){
+	 */ 
+	 	
+		
+		
+	 
+		function DoUploadForm(){
 			
 			$fb = new FormView();
 			$output = "";
+			$output .= "<div class='errordiv'>";
+			
+			$output.= "</div>";
 			$fb->BuildControllerField('register');
-			$fb->BuildHiddenField('MAX_FILE_SIZE', 100000);
+			$fb->BuildHiddenField('MAX_FILE_SIZE', $this->maxFileSize);
 			$fb->BuildLabel('Choose File to Upload');
-			$fb->BuildFileInput('uploadedfile');
+			$fb->BuildFileInput($this->uploadedFileName);
 			$fb->BuildSubmitButton('uploadfile', 'Upload File', 'Right');
-			$output .= $error;
+		
 			$output .= $fb->BuildForm('post', 'index.php?controller=register' , 'multipart/form-data');
 			
 			return $output;  
@@ -27,7 +37,7 @@ require_once ('formView.php');
 		 */
 		function TriedToUpload(){
 			
-			if(isset($_FILES['uploadedfile'])){
+			if(isset($_FILES[$this->uploadedFileName])){
 				
 				return true;
 			}
@@ -36,22 +46,21 @@ require_once ('formView.php');
 		/**
 		 * @return string
 		 */
-		function MoveFile(&$message){
-			if(isset($_FILES['uploadedfile'])){
+		
+		function GetUploadMessage(){
+			
+			return $this->uploadMessage;
+		}
+		function  GetUploadedFiles(){
+			
+			if (isset($_FILES)){
 				
-				$target_path = "Files/";
-				$target_path = $target_path . basename( $_FILES['uploadedfile']['name']); 
-				
-				if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
-					
-				    $message = "The file ".  basename( $_FILES['uploadedfile']['name']). 
-				    " has been uploaded";
-				} 
-				else{
-					
-				    $message = "There was an error uploading the file, please try again!";
-				}
+				return $_FILES;
 			}
-			return $target_path;
+			return null;
+		}
+		function GetUploadFileName(){
+			
+			return $this->uploadedFileName;
 		}
 	}

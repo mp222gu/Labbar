@@ -33,21 +33,37 @@ class LoginHandler{
 	 * 
 	*/
 	function DoLogin($username, $password){
-					
-		$this->db->ConnectToDb();	
-		$sqlquery = "SELECT id FROM users WHERE username = ? AND password = ?";
-		$stmt = $this->db->Prepare($sqlquery);
-		$stmt->bind_param("ss", $username, $password);
-		$res = $this->db->SelectMany($stmt);
-		if($res != null ) {
-			
-			$_SESSION[$this->loggedinSessionString] = true;
-			$_SESSION[$this->usernameString] = $username;
-			$_SESSION[$this->passwordString] = $password;
-			
-			return true;
+		$validator = new \Common\Validator();
+		if( $validator->ValidatePassword($password) && $validator->ValidateUsername($username)){		
+			$this->db->ConnectToDb();	
+			$sqlquery = "SELECT id FROM users WHERE username = ? AND password = ?";
+			$stmt = $this->db->Prepare($sqlquery);
+			$stmt->bind_param("ss", $username, $password);
+			$res = $this->db->SelectMany($stmt);
+			if($res != null ) {
+				
+				$_SESSION[$this->loggedinSessionString] = true;
+				$_SESSION[$this->usernameString] = $username;
+				$_SESSION[$this->passwordString] = $password;
+				
+				return true;
+			}
+			else{
+				$ret = array();
+				$ret[] = 1000;
+				return $ret;
+			}
 		}
-		return false;
+		else{
+		$validator = null;
+		$validator = new \Common\Validator();
+		
+		$validator->ValidatePassword($password);
+		$validator->ValidateUsername($username);
+		$errors = $validator->GetValidationErrors();
+		
+		return $errors;
+		}
 	}
 	/**
 	 * @return User
